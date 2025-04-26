@@ -27,8 +27,13 @@ public class VulnerableApp extends HttpServlet {
         // Vulnerability 2: Command Injection
         try {
             String data = request.getParameter("data");
-            // Unsafe command execution
-            Runtime.getRuntime().exec("echo " + data);
+            // Validate and sanitize user input
+            if (data != null && data.matches("^[a-zA-Z0-9_ ]*$")) {
+                // Safe command execution
+                Runtime.getRuntime().exec(new String[] {"echo", data});
+            } else {
+                response.getWriter().println("Invalid input.");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
